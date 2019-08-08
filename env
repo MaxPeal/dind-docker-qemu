@@ -1,0 +1,3 @@
+QEMU_ARCH=x86_64
+DOWNLOAD_FILE=*combined-squashfs.img.gz
+

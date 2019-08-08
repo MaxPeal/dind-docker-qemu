@@ -1,0 +1,11 @@
+test-x86-64:
+  image: debian:latest
+  services:
+    - aparcar/openwrt-qemu
+  variables:
+    QEMU_ARCH: x86_64
+    DOWNLOAD_FILE: *combined-squashfs.img.gz
+  script:
+    - ping -c 3 openwrt-qemu
+    - ssh-keyscan openwrt-qemu >> ~/.ssh/known_hosts
+    - ssh root@openwrt-qemu

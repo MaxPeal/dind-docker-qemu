@@ -1,0 +1,10 @@
+mips64el
+ppc64
+aarch64
+s390x
+arm
+sparc64
+i386
+x86_64
+m68k
+mips64
