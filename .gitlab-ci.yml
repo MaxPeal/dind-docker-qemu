@@ -1,0 +1,16 @@
+test-x86-64:
+    #  services:
+    #  - name: aparcar/openwrt-qemu:latest
+    #    alias: openwrt-qemu
+    #    entrypoint: ["bash", "/run.sh"]
+  image: aparcar/openwrt-qemu:latest
+  variables:
+    QEMU_ARCH: x86_64
+    DOWNLOAD_FILE: "*combined-squashfs.img.gz"
+    #QEMU_NO_SERIAL: 1
+  script:
+    - cd /
+    - bash run.sh
+    - cat /etc/os-release
+      #- ping -c 3 openwrt-qemu
+      #- ssh -o "StrictHostKeyChecking=no" root@openwrt-qemu 'cat /etc/os-release'
