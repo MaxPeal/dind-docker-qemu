@@ -5,9 +5,11 @@ QEMUVER=$(echo $DOCKER_TAG)
 
 #https://stackoverflow.com/questions/60080264/docker-cannot-build-multi-platform-images-with-docker-buildx
 #https://github.com/docker/buildx#installing
-export DOCKER_BUILDKIT=1
+###export DOCKER_BUILDKIT=1
 #docker build --platform=local -o . git://github.com/docker/buildx
-docker build -o . git://github.com/docker/buildx
+##docker build -o . git://github.com/docker/buildx
+
+curl -# https://github.com/docker/buildx/releases/download/v0.4.1/buildx-v0.4.1.linux-amd64 -o buildx
 mkdir -p ~/.docker/cli-plugins
 mv buildx ~/.docker/cli-plugins/docker-buildx
 
