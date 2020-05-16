@@ -1,4 +1,4 @@
-FROM tianon/qemu
+FROM tianon/qemu as builder
 
 RUN apt-get update -qq &&\
     apt-get install -y \
@@ -14,5 +14,7 @@ RUN apt-get update -qq &&\
 COPY key-setup.sh /
 RUN bash key-setup.sh
 COPY run.sh /
-
 CMD ["bash", "run.sh"]
+
+FROM builder
+RUN run.sh
