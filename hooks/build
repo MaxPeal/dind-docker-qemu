@@ -20,6 +20,8 @@ chmod 755 ~/.docker/cli-plugins/docker-buildx
 docker buildx rm builder
 docker buildx create --name builder --driver docker-container --use
 docker buildx inspect --bootstrap
+docker buildx ls
+
 
 if [ $DOCKER_TAG == "latest" ]
 then
