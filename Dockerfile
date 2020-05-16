@@ -14,7 +14,7 @@ RUN apt-get update -qq &&\
 COPY key-setup.sh /
 RUN bash key-setup.sh
 COPY run.sh /
-RUN run.sh
+RUN bash run.sh
 CMD ["bash", "run.sh"]
 
 #FROM builder
