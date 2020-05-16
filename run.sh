@@ -4,6 +4,7 @@ set -e
 export FILE_HOST="${FILE_HOST:-downloads.openwrt.org}"
 TARGET="${TARGET:-x86-64}"
 BRANCH="${BRANCH:-master}"
+DOWNLOAD_FILE="${DOWNLOAD_FILE:-\*combined-squashfs.img.gz}"
 
 if [ "$BRANCH" == "master" ]; then
     export DOWNLOAD_PATH="snapshots/targets/$(echo $TARGET | tr '-' '/')"
