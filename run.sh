@@ -155,4 +155,6 @@ fi
 qemuArgs+=( "$@" )
 
 set -x
+exec "$qemu" -version
+exec "$qemu" -accel help
 exec "$qemu" "${qemuArgs[@]}"
