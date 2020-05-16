@@ -1,4 +1,11 @@
-ARG QEMU_VER=3
+#ARG QEMU_VER=3
+ARG QEMUVER
+ENV QEMU_VER=$QEMUVER
+ARG TAG
+ENV TAGvar=$TAG
+RUN ECHO tagvar $TAGvar tagvar
+RUN ECHO tag $TAG tag
+#ENV env_var_name=$var_name
 ARG HTTP_PROXY
 ARG http_proxy
 ARG HTTPS_PROXY
