@@ -11,9 +11,10 @@ else
     export DOWNLOAD_PATH="releases/$BRANCH/targets/$(echo $TARGET | tr '-' '/')"
 fi
 
-curl "https://$FILE_HOST/$DOWNLOAD_PATH/sha256sums" -fs -o sha256sums
-curl "https://$FILE_HOST/$DOWNLOAD_PATH/sha256sums.asc" -fs -o sha256sums.asc || true
-curl "https://$FILE_HOST/$DOWNLOAD_PATH/sha256sums.sig" -fs -o sha256sums.sig || true
+curlopt="--progress-bar --show-error -L --max-redirs 3 --retry 3 --retry-connrefused --retry-delay 2 --max-time 30"
+curl $curlopt "https://$FILE_HOST/$DOWNLOAD_PATH/sha256sums" -o sha256sums
+curl $curlopt "https://$FILE_HOST/$DOWNLOAD_PATH/sha256sums.asc" -o sha256sums.asc || true
+curl $curlopt "https://$FILE_HOST/$DOWNLOAD_PATH/sha256sums.sig" -o sha256sums.sig || true
 if [ ! -f sha256sums.asc ] && [ ! -f sha256sums.sig ]; then
     echo "Missing sha256sums signature files"
     exit 1
