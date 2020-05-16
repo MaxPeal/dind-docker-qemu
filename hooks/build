@@ -3,6 +3,18 @@
 #NODE_VERSION=$(echo $DOCKER_TAG | cut -d "-" -f2)
 QEMUVER=$(echo $DOCKER_TAG)
 
+#https://stackoverflow.com/questions/60080264/docker-cannot-build-multi-platform-images-with-docker-buildx
+#https://github.com/docker/buildx#installing
+export DOCKER_BUILDKIT=1
+docker build --platform=local -o . git://github.com/docker/buildx
+mkdir -p ~/.docker/cli-plugins
+mv buildx ~/.docker/cli-plugins/docker-buildx
+
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+docker buildx rm builder
+docker buildx create --name builder --driver docker-container --use
+docker buildx inspect --bootstrap
+
 if [ $DOCKER_TAG == "latest" ]
 then
   docker build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
