@@ -4,7 +4,7 @@ set -e
 export FILE_HOST="${FILE_HOST:-downloads.openwrt.org}"
 TARGET="${TARGET:-x86-64}"
 BRANCH="${BRANCH:-master}"
-DOWNLOAD_FILE="${DOWNLOAD_FILE:-\*combined-squashfs.img.gz}"
+DOWNLOAD_FILE="${DOWNLOAD_FILE:-*combined-squashfs.img.gz}"
 
 if [ "$BRANCH" == "master" ]; then
     export DOWNLOAD_PATH="snapshots/targets/$(echo $TARGET | tr '-' '/')"
@@ -44,7 +44,9 @@ if [ -f sha256sums.sig ]; then
 fi
 
 # shrink checksum file to single desired file and verify downloaded archive
+set -vx
 rsync -av "$FILE_HOST::downloads/$DOWNLOAD_PATH/$DOWNLOAD_FILE" . || exit 1
+set +vx
 grep $DOWNLOAD_FILE sha256sums > sha256sums_min
 sha256sum -c sha256sums_min
 rm -f sha256sums{,_min,.sig,.asc}
