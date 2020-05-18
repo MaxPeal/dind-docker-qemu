@@ -3,6 +3,8 @@ set -vx
 
 #NODE_VERSION=$(echo $DOCKER_TAG | cut -d "-" -f2)
 QEMUVER=$(echo $DOCKER_TAG)
+DockerServerVersion=$(docker info --format '{{.ServerVersion}}')
+DockerSxperimental=$(docker info --format '{{.ExperimentalBuild}}')
 
 #https://stackoverflow.com/questions/60080264/docker-cannot-build-multi-platform-images-with-docker-buildx
 #https://github.com/docker/buildx#installing
@@ -23,6 +25,15 @@ chmod 755 ~/.docker/cli-plugins/docker-buildx
 #docker buildx inspect --bootstrap
 #docker buildx ls
 
+  # Instantiate docker buildx builder with multi-architecture support.
+  ###export DOCKER_CLI_EXPERIMENTAL=enabled
+  docker -v
+  docker --help || docker -h
+  docker version
+  docker buildx create --name mybuilder
+  docker buildx use mybuilder
+  # Start up buildx and verify that all is OK.
+  docker buildx inspect --bootstrap
 
 if [ $DOCKER_TAG == "latest" ]
 then
