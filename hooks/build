@@ -13,7 +13,7 @@ DockerSxperimental=$(docker info --format '{{.ExperimentalBuild}}')
 #docker build --platform=local -o . git://github.com/docker/buildx
 ##docker build -o . git://github.com/docker/buildx
 
-curl -# https://github.com/docker/buildx/releases/download/v0.4.1/buildx-v0.4.1.linux-amd64 -o buildx
+curl -# -L --head https://github.com/docker/buildx/releases/download/v0.4.1/buildx-v0.4.1.linux-amd64 -o buildx
 mkdir -p ~/.docker/cli-plugins
 mv buildx ~/.docker/cli-plugins/docker-buildx
 chmod 755 ~/.docker/cli-plugins/docker-buildx
