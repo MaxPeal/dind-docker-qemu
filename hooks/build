@@ -13,7 +13,14 @@ DockerSxperimental=$(docker info --format '{{.ExperimentalBuild}}')
 #docker build --platform=local -o . git://github.com/docker/buildx
 ##docker build -o . git://github.com/docker/buildx
 
-curl -# -L --head https://github.com/docker/buildx/releases/download/v0.4.1/buildx-v0.4.1.linux-amd64 -o buildx
+HFILE=buildx HASHcmd=sha256sum HASHSUM=3f4e77686659766a0726b5a47a87e2cc14c86ebf15abf7f19c45d23b0daff222
+#curl -o $HFILE -LR -C- -# -f -S --connect-timeout 15 --max-time 600 --retry 3 --retry-connrefused --dump-header --verbose https://github.com/docker/buildx/releases/download/v0.4.1/buildx-v0.4.1.linux-amd64
+curl -o $HFILE -LR -# -C- -f -S --connect-timeout 15 --max-time 600 --retry 3 --retry-connrefused --dump-header - --include --compressed --verbose https://github.com/docker/buildx/releases/download/v0.4.1/buildx-v0.4.1.linux-amd64
+# --max-time 60 --fail-early --http1.0 --http1.1 --http2
+(printf %b $HASHSUM\\040\\052$HFILE\\012 ; printf %b $HASHSUM\\040\\052$HFILE\\012 | $HASHcmd -c - ;) || $HASHcmd -b $HFILE
+#curl -o $HFILE -# -f -S -L --connect-timeout 15 -m 20 --retry 3 --head https://github.com/docker/buildx/releases/download/v0.4.1/buildx-v0.4.1.linux-amd64
+#HFILE=buildx HASHcmd=sha256sum HASHSUM=3f4e77686659766a0726b5a47a87e2cc14c86ebf15abf7f19c45d23b0daff222 ; (printf %b $HASHSUM\\040\\052$HFILE\\012 ; printf %b $HASHSUM\\040\\052$HFILE\\012 | $HASHcmd -c - ;) || $HASHcmd -b $HFILE
+
 mkdir -p ~/.docker/cli-plugins
 mv buildx ~/.docker/cli-plugins/docker-buildx
 chmod 755 ~/.docker/cli-plugins/docker-buildx
