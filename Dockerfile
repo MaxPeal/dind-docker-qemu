@@ -3,7 +3,7 @@
 # https://docs.docker.com/develop/develop-images/build_enhancements/
 #ARG QEMU_VER=3
 ARG QEMUVER
-ENV QEMU_VER=${QEMUVER:-4}
+ENV QEMU_VER=${QEMUVER:-5}
 ARG TAG
 ENV TAGvar=${TAG:-word}
 #ENV env_var_name=$var_name
