@@ -13,7 +13,8 @@ else
     export DOWNLOAD_FILE="${DOWNLOAD_FILE:-*combined-squashfs.img.gz}"
 fi
 
-curlopt="--progress-bar --show-error -L --max-redirs 3 --retry 3 --retry-connrefused --retry-delay 2 --max-time 30"
+#curlopt="--progress-bar --show-error -L --max-redirs 3 --retry 3 --retry-connrefused --retry-delay 2 --max-time 30"
+curlopt="--progress-bar --show-error -L --max-redirs 3 --retry 3 --retry-delay 2 --max-time 30"
 curl $curlopt "https://$FILE_HOST/$DOWNLOAD_PATH/sha256sums" -o sha256sums
 curl $curlopt "https://$FILE_HOST/$DOWNLOAD_PATH/sha256sums.asc" -o sha256sums.asc || true
 curl $curlopt "https://$FILE_HOST/$DOWNLOAD_PATH/sha256sums.sig" -o sha256sums.sig || true
