@@ -79,7 +79,20 @@ chmod 755 ~/.docker/cli-plugins/docker-buildx
   docker buildx inspect --bootstrap
   docker buildx inspect --bootstrap
 
-docker buildx build --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6 --tag testbox --progress plain -<<EOF
+docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "[:space:]"
+docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "[:space:]"
+
+docker buildx build --platform $(docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "[:space:]") --tag testbox --progress plain -<<EOF
+FROM busybox
+RUN echo "hello world"
+RUN uname -a
+RUN uname -m
+RUN getconf -a
+EOF
+
+#docker buildx build --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6 --tag testbox --progress plain -<<EOF
+#docker buildx build --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6 --tag testbox --progress plain -<<EOF
+docker buildx build --platform linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6 --tag testbox --progress plain -<<EOF
 FROM busybox
 RUN echo "hello world"
 RUN uname -a
