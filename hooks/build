@@ -9,8 +9,8 @@ DockerSxperimental=$(docker info --format '{{.ExperimentalBuild}}')
 #https://stackoverflow.com/questions/60080264/docker-cannot-build-multi-platform-images-with-docker-buildx
 #https://github.com/docker/buildx#installing
 ###export DOCKER_BUILDKIT=1
-##export DOCKER_BUILDKIT=1
-##export DOCKER_CLI_EXPERIMENTAL=enabled
+###export DOCKER_BUILDKIT=1
+###export DOCKER_CLI_EXPERIMENTAL=enabled
 #docker build --platform=local -o . git://github.com/docker/buildx
 ##docker build -o . git://github.com/docker/buildx
 
@@ -59,7 +59,8 @@ chmod 755 ~/.docker/cli-plugins/docker-buildx
 #docker buildx ls
 
   # Instantiate docker buildx builder with multi-architecture support.
-  ###export DOCKER_CLI_EXPERIMENTAL=enabled
+  export DOCKER_BUILDKIT=1
+  export DOCKER_CLI_EXPERIMENTAL=enabled
   docker -v
   docker --help || docker -h
   docker version
@@ -79,7 +80,7 @@ chmod 755 ~/.docker/cli-plugins/docker-buildx
   docker buildx inspect --bootstrap
   docker buildx inspect --bootstrap
 
-docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "[:space:]"
+#docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "[:space:]"
 docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "[:space:]"
 
 docker buildx build --platform $(docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "[:space:]") --tag testbox --progress plain -<<EOF
@@ -113,7 +114,7 @@ then
   #docker buildx build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
   #docker buildx build --tag ${IMAGE_NAME} .
   #docker build --tag ${IMAGE_NAME} . || docker build .
-  DOCKER_BUILDKIT=1 docker build --progress=plain --tag ${IMAGE_NAME} . || DOCKER_BUILDKIT=1 --progress=plain docker build . || docker build .
+  DOCKER_BUILDKIT=1 docker buildx --progress=plain --tag ${IMAGE_NAME} . || DOCKER_BUILDKIT=1 docker build --progress=plain . || docker build .
 else
   #docker build . --build-arg NODE_VERSION=${NODE_VERSION} -t ${IMAGE_NAME}
   #docker build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
@@ -121,5 +122,5 @@ else
   #docker buildx build . -t ${IMAGE_NAME}
   #docker buildx build --tag ${IMAGE_NAME} .
   #docker build --tag ${IMAGE_NAME} . || docker build .
-  DOCKER_BUILDKIT=1 docker build --progress=plain --tag ${IMAGE_NAME} . || DOCKER_BUILDKIT=1 --progress=plain docker build . || docker build .
+  DOCKER_BUILDKIT=1 docker buildx --progress=plain --tag ${IMAGE_NAME} . || DOCKER_BUILDKIT=1 docker build --progress=plain . || docker build .
 fi
