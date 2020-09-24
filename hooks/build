@@ -188,7 +188,8 @@ then
   #docker buildx build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
   #docker buildx build --tag ${IMAGE_NAME} .
   #docker build --tag ${IMAGE_NAME} . || docker build .
-  DOCKER_BUILDKIT=1 docker buildx build $progressFlag --tag ${IMAGE_NAME} . --push || DOCKER_BUILDKIT=1 docker buildx build --platform linux/amd64 . --push || docker build . --push
+  # docker build --build-arg CUSTOM=$VAR -f $DOCKERFILE_PATH -t $IMAGE_NAME . ####
+  DOCKER_BUILDKIT=1 docker buildx build $progressFlag --file Dockerfile --tag ${IMAGE_NAME} --push .  || DOCKER_BUILDKIT=1 docker buildx build --platform linux/amd64 --file Dockerfile --push --tag ${IMAGE_NAME} .  || docker build . --push
 else
   #docker build . --build-arg NODE_VERSION=${NODE_VERSION} -t ${IMAGE_NAME}
   #docker build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
