@@ -182,7 +182,7 @@ docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2  | tr "," 
 #docker run -it --rm $(cat $iidfile)
 #docker rmi $(cat $iidfile)
 
-if [ $DOCKER_TAG == "latest" ]
+if [ "$DOCKER_TAG" == "latest" ]
 then
   #docker build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
   #docker buildx build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
