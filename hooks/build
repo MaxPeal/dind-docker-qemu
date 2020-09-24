@@ -81,15 +81,64 @@ chmod 755 ~/.docker/cli-plugins/docker-buildx
   docker buildx inspect --bootstrap
 
 #docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "[:space:]"
+docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "^[:blank:]" | tr "," "\\n"
 docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "[:space:]"
 
-docker buildx build --platform $(docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "[:space:]") --tag testbox --progress plain -<<EOF
+#####
+cat > Dockerfile.busybox -<<EOF
 FROM busybox
-RUN echo "hello world"
+RUN echo "hello world from busybox"
 RUN uname -a
 RUN uname -m
 RUN getconf -a
 EOF
+
+cat > Dockerfile.debian-stable-slim -<<EOF
+FROM debian:stable-slim
+RUN echo "hello world form debian:stable-slim"
+RUN uname -a
+RUN uname -m
+RUN getconf -a
+EOF
+
+cat > Dockerfile.debian-testing-slim -<<EOF
+FROM debian:testing-slim
+RUN echo "hello world form debian:testing-slim"
+RUN uname -a
+RUN uname -m
+RUN getconf -a
+EOF
+
+cat > Dockerfile.debian-unstable-slim -<<EOF
+FROM debian:unstable-slim
+RUN echo "hello world form debian:unstable-slim"
+RUN uname -a
+RUN uname -m
+RUN getconf -a
+EOF
+
+
+
+#docker buildx build --platform $(docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "[:space:]") --tag testbox --progress plain 
+cat Dockerfile.busybox | docker buildx build --platform linux/amd64 --tag testbox --progress plain -
+docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2  | tr "," "\\n" | grep -v linux/amd64 | \
+  while read line; do
+   #docker buildx rm $line
+   cat Dockerfile.busybox | docker buildx build --platform ${line} --tag testbox --progress plain - \
+   || cat Dockerfile.debian-stable-slim | docker buildx build --platform ${line} --tag testbox --progress plain - \
+   || cat Dockerfile.debian-testing-slim | docker buildx build --platform ${line} --tag testbox --progress plain - \
+   || cat Dockerfile.debian-unstable-slim | docker buildx build --platform ${line} --tag testbox --progress plain - #\
+   #|| true
+  done
+#####
+
+#docker buildx build --platform $(docker buildx inspect --bootstrap | grep -i Platforms | cut -d":" -f2 | tr -d "[:space:]") --tag testbox --progress plain -<<EOF
+#FROM busybox
+#RUN echo "hello world"
+#RUN uname -a
+#RUN uname -m
+#RUN getconf -a
+#EOF
 
 #docker buildx build --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6 --tag testbox --progress plain -<<EOF
 #docker buildx build --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6 --tag testbox --progress plain -<<EOF
