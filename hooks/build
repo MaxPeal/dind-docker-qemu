@@ -10,11 +10,32 @@ DockerSxperimental=$(docker info --format '{{.ExperimentalBuild}}')
 #https://github.com/docker/buildx#installing
 ###export DOCKER_BUILDKIT=1
 ##export DOCKER_BUILDKIT=1
+##export DOCKER_CLI_EXPERIMENTAL=enabled
 #docker build --platform=local -o . git://github.com/docker/buildx
 ##docker build -o . git://github.com/docker/buildx
 
+#  let arch: string;
+#  switch (context.osArch) {
+#    case 'x64': {
+#      arch = 'amd64';
+#      break;
+#    }
+#    case 'ppc64': {
+#      arch = 'ppc64le';
+#      break;
+#    }
+#    case 'arm': {
+#      const arm_version = (process.config.variables as any).arm_version;
+#      arch = arm_version ? 'arm-v' + arm_version : 'arm';
+#      break;
+#    }
+#    default: {
+#      arch = context.osArch;
+#      break;
+#    }
+
 #HFILE=buildx HASHcmd=sha256sum HASHSUM=3f4e77686659766a0726b5a47a87e2cc14c86ebf15abf7f19c45d23b0daff222 HURL=https://github.com/docker/buildx/releases/download/v0.4.1/buildx-v0.4.1.linux-amd64
-HFILE=buildx HASHcmd=sha256sum HASHSUM=760e36543c3a2db2d61f6e2bd9c25a6a54df638726c3d4d32c6ead99680da7d7 HURL=https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.linux-amd64
+HFILE=buildx HASHcmd=sha256sum HASHSUM=c21f07356de93a4fa5d1b7998252ea5f518dbe94ae781e0edeec7d7e29fdf899 HURL=https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.linux-amd64
 printf "HFILE=$HFILE HASHcmd=$HASHcmd HASHSUM=$HASHSUM HURL=$HURL"
 curl -o $HFILE -LR -C- -f -S --connect-timeout 15 --max-time 600 --retry 3 --dump-header - --compressed --verbose $HURL ; (printf %b CHECKSUM\\072\\040expect\\040this\\040$HASHcmd\\072\\040$HASHSUM\\040\\052$HFILE\\012 ; printf %b $HASHSUM\\040\\052$HFILE\\012 | $HASHcmd -c - ;) || (printf %b ERROR\\072\\040CHECKSUMFAILD\\072\\040the\\040file\\040has\\040this\\040$HASHcmd\\072\\040 ; $HASHcmd -b $HFILE ; exit 1)
 
@@ -42,22 +63,50 @@ chmod 755 ~/.docker/cli-plugins/docker-buildx
   docker -v
   docker --help || docker -h
   docker version
+  docker info
+  
+  docker buildx ls | cut -d" " -f1 | grep -v "/" | \
+  while read line; do
+   docker buildx rm $line
+  done
+  
+  # docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  
   docker buildx create --name mybuilder
   docker buildx use mybuilder
   # Start up buildx and verify that all is OK.
+  # duble as it needs some times duble exec
   docker buildx inspect --bootstrap
+  docker buildx inspect --bootstrap
+
+docker buildx build --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6 --tag testbox --progress plain -<<EOF
+FROM busybox
+RUN echo "hello world"
+RUN uname -a
+RUN uname -m
+RUN getconf -a
+EOF
+
+
+
+#iidfile=$(mktemp -t docker-iidfile.XXXXXXXXXX)
+#DOCKER_BUILDKIT=1 docker build --iidfile $iidfile --progress=plain .
+#docker run -it --rm $(cat $iidfile)
+#docker rmi $(cat $iidfile)
 
 if [ $DOCKER_TAG == "latest" ]
 then
   #docker build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
   #docker buildx build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
   #docker buildx build --tag ${IMAGE_NAME} .
-  docker build --tag ${IMAGE_NAME} . || docker build .
+  #docker build --tag ${IMAGE_NAME} . || docker build .
+  DOCKER_BUILDKIT=1 docker build --progress=plain --tag ${IMAGE_NAME} . || DOCKER_BUILDKIT=1 --progress=plain docker build . || docker build .
 else
   #docker build . --build-arg NODE_VERSION=${NODE_VERSION} -t ${IMAGE_NAME}
   #docker build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
   #docker buildx build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
   #docker buildx build . -t ${IMAGE_NAME}
   #docker buildx build --tag ${IMAGE_NAME} .
-  docker build --tag ${IMAGE_NAME} . || docker build .
+  #docker build --tag ${IMAGE_NAME} . || docker build .
+  DOCKER_BUILDKIT=1 docker build --progress=plain --tag ${IMAGE_NAME} . || DOCKER_BUILDKIT=1 --progress=plain docker build . || docker build .
 fi
