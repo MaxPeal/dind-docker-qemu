@@ -1,6 +1,7 @@
-# syntax = <frontend image>, e.g. # syntax = docker/dockerfile:1.0-experimental
-# syntax = docker/dockerfile:1.0-experimental
-# https://docs.docker.com/develop/develop-images/build_enhancements/
+#foo 
+#foo # syntax = <frontend image>, e.g. # syntax = docker/dockerfile:1.0-experimental
+#foo # syntax = docker/dockerfile:1.0-experimental
+#foo # https://docs.docker.com/develop/develop-images/build_enhancements/
 #ARG QEMU_VER=3
 ARG QEMUVER
 ENV QEMU_VER=${QEMUVER:-5}
