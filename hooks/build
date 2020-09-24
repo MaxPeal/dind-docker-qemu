@@ -114,7 +114,7 @@ then
   #docker buildx build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
   #docker buildx build --tag ${IMAGE_NAME} .
   #docker build --tag ${IMAGE_NAME} . || docker build .
-  DOCKER_BUILDKIT=1 docker buildx --progress=plain --tag ${IMAGE_NAME} . || DOCKER_BUILDKIT=1 docker build --progress=plain . || docker build .
+  DOCKER_BUILDKIT=1 docker buildx --progress plain --tag ${IMAGE_NAME} . || DOCKER_BUILDKIT=1 docker build --progress plain . || docker build .
 else
   #docker build . --build-arg NODE_VERSION=${NODE_VERSION} -t ${IMAGE_NAME}
   #docker build . --build-arg QEMUVER=${DOCKER_TAG} -t ${IMAGE_NAME}
@@ -122,5 +122,5 @@ else
   #docker buildx build . -t ${IMAGE_NAME}
   #docker buildx build --tag ${IMAGE_NAME} .
   #docker build --tag ${IMAGE_NAME} . || docker build .
-  DOCKER_BUILDKIT=1 docker buildx --progress=plain --tag ${IMAGE_NAME} . || DOCKER_BUILDKIT=1 docker build --progress=plain . || docker build .
+  DOCKER_BUILDKIT=1 docker buildx --progress plain --tag ${IMAGE_NAME} . || DOCKER_BUILDKIT=1 docker build --progress plain . || docker build .
 fi
